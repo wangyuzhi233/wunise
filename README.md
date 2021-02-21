@@ -1,7 +1,2 @@
-[wunise](https://github.com/wangyuzhi233/wunise) - A rendering library
+[wunise](https://github.com/wangyuzhi233/wunise) - A renderer
 ======================================================================
-
-What is it?
------------
-
-A rendering library for Windows. 
