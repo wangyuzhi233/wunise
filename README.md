@@ -1,5 +1,3 @@
-# wunise
-
 [wunise](https://github.com/wangyuzhi233/wunise) - A rendering library
 ======================================================================
 
