@@ -7,41 +7,10 @@
 
 
 // Main message handler for the sample.
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK myProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    //DXSample* pSample = reinterpret_cast<DXSample*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
     switch (message)
     {
-    case WM_CREATE:
-    {
-
-    }
-    return 0;
-
-    case WM_KEYDOWN:
-        //if (pSample)
-        //{
-        //    pSample->OnKeyDown(static_cast<UINT8>(wParam));
-        //}
-        return 0;
-
-    case WM_KEYUP:
-        //if (pSample)
-        //{
-        //    pSample->OnKeyUp(static_cast<UINT8>(wParam));
-        //}
-        return 0;
-
-    case WM_PAINT:
-        //if (pSample)
-        //{
-        //    pSample->OnUpdate();
-        //    pSample->OnRender();
-        //}
-        //draw
-        return 0;
-
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -51,15 +20,13 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void func();
-
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine, _In_ int nCmdShow) {
 
     // Initialize the window class.
     WNDCLASSEX windowClass = { 0 };
     windowClass.cbSize = sizeof(WNDCLASSEX);
     windowClass.style = CS_HREDRAW | CS_VREDRAW;
-    windowClass.lpfnWndProc = WindowProc;
+    windowClass.lpfnWndProc = myProc;
     windowClass.hInstance = hInstance;
     windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     windowClass.lpszClassName = L"DXSampleClass";
@@ -84,7 +51,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Initialize the sample. OnInit is defined in each child-implementation of DXSample.
 
     ShowWindow(m_hwnd, nCmdShow);
-    func();
+
     // Main sample loop.
     MSG msg = {};
     while (msg.message != WM_QUIT)
@@ -94,6 +61,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+        }
+        else
+        {
+            //Render();
         }
     }
     //destory
