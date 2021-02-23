@@ -96,3 +96,10 @@
 //
 //	return 0;
 //}
+
+void func() {
+	wunise::Vector4 v;
+
+	//DirectX::XMVECTOR
+
+}
