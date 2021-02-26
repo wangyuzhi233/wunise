@@ -1,11 +1,7 @@
 #pragma once
 #ifndef __WUNISE__H__
 #define __WUNISE__H__
-#include <Windows.h>
-#include <nmmintrin.h> //sse4.2
-#include <DirectXMath.h>
-#include <d3d12.h>
-#include <string>
+
 
 //#define __my_max(a,b)            (((a) > (b)) ? (a) : (b))
 //#define __my_min(a,b)            (((a) < (b)) ? (a) : (b))
