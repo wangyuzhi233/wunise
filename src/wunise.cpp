@@ -3,7 +3,6 @@
 #include <Windows.h>
 #include <GL/GL.h>
 #pragma comment(lib,"opengl32.lib")
-// Main message handler for the sample.
 LRESULT CALLBACK myProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -46,15 +45,25 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         nullptr);
 
     HDC dc = GetDC(m_hwnd);
-    PIXELFORMATDESCRIPTOR pfd;
-    memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-    pfd.nVersion = 1;
-    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.cColorBits = 32;
-    pfd.cDepthBits = 24;
-    pfd.cStencilBits = 8;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    PIXELFORMATDESCRIPTOR pfd =
+    {
+        sizeof(PIXELFORMATDESCRIPTOR),
+        1,
+        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    // Flags
+        PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
+        32,                   // Colordepth of the framebuffer.
+        0, 0, 0, 0, 0, 0,
+        0,
+        0,
+        0,
+        0, 0, 0, 0,
+        24,                   // Number of bits for the depthbuffer
+        8,                    // Number of bits for the stencilbuffer
+        0,                    // Number of Aux buffers in the framebuffer.
+        PFD_MAIN_PLANE,
+        0,
+        0, 0, 0
+    };
     int pixelFormat = ChoosePixelFormat(dc, &pfd);
     SetPixelFormat(dc, pixelFormat, &pfd);
     HGLRC rc = wglCreateContext(dc);
@@ -62,7 +71,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //glClearColor(0, 0, 1, 1);
     glClearColor(0, 0, 1, 1);
     glViewport(0, 0, 800, 600);
-    
+
     ShowWindow(m_hwnd, nCmdShow);
     UpdateWindow(m_hwnd);
 
@@ -79,11 +88,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         else
         {
             glClear(GL_COLOR_BUFFER_BIT);
-
             SwapBuffers(dc);
         }
     }
-
 
     return 0;
 }
