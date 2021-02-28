@@ -1,5 +1,5 @@
 #include "wunise/application.h"
-
+#include <gl/GL.h>
 typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
 
 LRESULT CALLBACK ___myProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
