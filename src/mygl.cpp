@@ -3,6 +3,7 @@
 #include <gl/GL.h>
 #define GL_VERTEX_SHADER 0x8B31
 #define GL_FRAGMENT_SHADER 0x8B30
+#define GL_STATIC_DRAW 0x88E4
 
 typedef char GLchar;
 

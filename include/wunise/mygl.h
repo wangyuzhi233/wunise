@@ -12,8 +12,9 @@ namespace wunise {
 		GLObject& operator=(const GLObject&) { return *this; }
 		GLObject& operator=(GLObject&&) noexcept { return *this; }
 
-		void InitShader(std::string vs, std::string fs);
+		void InitShader(std::string vs, std::string fs);		
 	private:
+		//unsigned int shaderProgram;
 	};
 }
 #endif
