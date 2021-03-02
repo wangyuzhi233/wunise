@@ -1,62 +1,9 @@
 #include <Windows.h>
-#include <d3d11_4.h>
-#include <dxgi1_6.h>
-#include <wrl.h>
+#include "wunise/dxapp.h"
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-// Main message handler for the sample.
 
-inline void ThrowIfFailed(HRESULT hr)
-{
-    if (FAILED(hr))
-    {
-        throw;
-    }
-}
 
-class DXAPP {
-public:
-    DXAPP() {}
-    ~DXAPP() {}
-    DXAPP(const DXAPP&) {}
-    DXAPP(DXAPP&&) noexcept {}
-    DXAPP& operator=(const DXAPP&) { return *this; }
-    DXAPP& operator=(DXAPP&&) noexcept { return *this; }
-
-    void InitDevice() {
-        UINT createDeviceFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-        createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-        D3D_FEATURE_LEVEL featureLevel;
-        ID3D11Device* md3dDevice;
-        ID3D11DeviceContext* md3dImmediateContext;
-
-        D3D_FEATURE_LEVEL featurearray[] = {
-            D3D_FEATURE_LEVEL_11_1,
-            D3D_FEATURE_LEVEL_11_0,
-            D3D_FEATURE_LEVEL_10_1,
-            D3D_FEATURE_LEVEL_10_0,
-            D3D_FEATURE_LEVEL_9_3,
-            D3D_FEATURE_LEVEL_9_2,
-            D3D_FEATURE_LEVEL_9_1,
-        };;
-
-        ThrowIfFailed(D3D11CreateDevice(
-            0, // default adapter
-            D3D_DRIVER_TYPE_HARDWARE,
-            0, // no software device
-            createDeviceFlags,
-            featurearray, 7, // default feature level array
-            D3D11_SDK_VERSION,
-            &md3dDevice,
-            &featureLevel,
-            &md3dImmediateContext));
-
-    }
-private:
-    
-};
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -104,7 +51,8 @@ int WINAPI wWinMain(
         hInstance,
         nullptr);
 
-    DXAPP app;
+
+    wunise::DXAPP app;
     app.InitDevice();
 
     ShowWindow(m_hwnd, nShowCmd);
