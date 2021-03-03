@@ -54,6 +54,7 @@ int WINAPI wWinMain(
 
     wunise::DXAPP app;
     app.InitDevice();
+    app.InitSwapChain(m_hwnd, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     ShowWindow(m_hwnd, nShowCmd);
 
@@ -69,7 +70,7 @@ int WINAPI wWinMain(
         }
         else
         {
-
+            app.SwapChain();
         }
     }
     return 0;
