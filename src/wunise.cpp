@@ -1,9 +1,9 @@
 #include <Windows.h>
-#include "wunise/dxapp.h"
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-
-
+#include <d3d11_4.h>
+#include <dxgi1_6.h>
+#include <wrl/client.h>
+#define WINDOW_WIDTH 200
+#define WINDOW_HEIGHT 200
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
@@ -14,7 +14,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         return 0;
     }
 
-    // Handle any messages the switch statement didn't.
+
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
@@ -24,7 +24,6 @@ int WINAPI wWinMain(
     _In_ LPWSTR lpCmdLine,
     _In_ int nShowCmd) 
 {
-    // Initialize the window class.
     WNDCLASSEX windowClass = { 0 };
     windowClass.cbSize = sizeof(WNDCLASSEX);
     windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -37,7 +36,6 @@ int WINAPI wWinMain(
     RECT windowRect = { 0, 0, static_cast<LONG>(WINDOW_WIDTH), static_cast<LONG>(WINDOW_HEIGHT) };
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-    // Create the window and store a handle to it.
     HWND m_hwnd = CreateWindow(
         windowClass.lpszClassName,
         L"wunise",
@@ -46,23 +44,73 @@ int WINAPI wWinMain(
         CW_USEDEFAULT,
         windowRect.right - windowRect.left,
         windowRect.bottom - windowRect.top,
-        nullptr,        // We have no parent window.
-        nullptr,        // We aren't using menus.
+        nullptr,        
+        nullptr,        
         hInstance,
         nullptr);
 
+    UINT createDeviceFlags = 0;
+#ifdef _DEBUG
+    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+    D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_11_1
+    }, featureLevel;
+    DXGI_SWAP_CHAIN_DESC sd = {};
+    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = WINDOW_WIDTH;
+    sd.BufferDesc.Height = WINDOW_HEIGHT;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = m_hwnd;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+    Microsoft::WRL::ComPtr<IDXGISwapChain> SwapChain;
+    Microsoft::WRL::ComPtr<ID3D11Device> Device;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> DeviceContext;
+    D3D11CreateDeviceAndSwapChain(
+        nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        createDeviceFlags,
+        featureLevels,
+        1,
+        D3D11_SDK_VERSION,
+        &sd,
+        &SwapChain,
+        &Device,
+        &featureLevel,
+        &DeviceContext
+    );
 
-    wunise::DXAPP app;
-    app.InitDevice();
-    app.InitSwapChain(m_hwnd, WINDOW_WIDTH, WINDOW_HEIGHT);
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> RenderTargetView;
+    ID3D11Texture2D1* pBackBuffer = NULL;
+    SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+    Device->CreateRenderTargetView(pBackBuffer, NULL, &RenderTargetView);
+    pBackBuffer->Release();
+    //
+    DeviceContext->OMSetRenderTargets(1, RenderTargetView.GetAddressOf(), NULL);
+
+    D3D11_VIEWPORT vp;
+    vp.Width = (FLOAT)WINDOW_WIDTH;
+    vp.Height = (FLOAT)WINDOW_HEIGHT;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    DeviceContext->RSSetViewports(1, &vp);
 
     ShowWindow(m_hwnd, nShowCmd);
 
-    // Main sample loop.
     MSG msg = {};
     while (msg.message != WM_QUIT)
     {
-        // Process any messages in the queue.
+
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
@@ -70,8 +118,12 @@ int WINAPI wWinMain(
         }
         else
         {
-            app.SwapChain();
+            float ClearColor[] = { 1.F, 0, 0, 1 }; //red,green,blue,alpha
+            DeviceContext->ClearRenderTargetView(RenderTargetView.Get(), ClearColor);
+
+            SwapChain->Present(1, 0);
         }
     }
+
     return 0;
 }
