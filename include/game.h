@@ -2,23 +2,23 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 #include <Windows.h>
-#include <string>
+#include "window.h"
+#include "graphics.h"
 namespace wunise {
 	class Game {
 	public:
 		Game();
-		Game(const wchar_t* title, int width, int height);
-		Game(const Game& r);
-		Game(Game&&) noexcept;
-		Game& operator=(const Game& r);
-		Game& operator=(Game&& r) noexcept;
 		~Game();
+		Game(const Game&);
+		Game(Game&&) noexcept;
+		Game& operator=(const Game&);
+		Game& operator=(Game&&) noexcept;
 
-		int Run(HINSTANCE hInstance, int nCmdShow);
-	public:
-		std::wstring Title;
-		int Width;
-		int Height;
+		void Run();
+		void Exit();
+	protected:
+		Window window;
+		GraphicsDevice device;
 	};
 }
 #endif // !__GAME_H__
