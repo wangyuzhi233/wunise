@@ -6,25 +6,9 @@ namespace wunise {
 
 			switch (message)
 			{
-			case WM_CREATE:
-
-				return 0;
-
-			case WM_KEYDOWN:
-
-				return 0;
-
-			case WM_KEYUP:
-
-				return 0;
-
-			case WM_PAINT:
-
-				return 0;
-
 			case WM_DESTROY:
 				PostQuitMessage(0);
-				return 0;
+				break;
 			}
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -87,8 +71,7 @@ namespace wunise {
 		RECT windowRect = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
 		AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
-		window_hwnd = CreateWindowEx(
-			0,
+		window_hwnd = CreateWindow(
 			windowClass.lpszClassName,
 			title.c_str(),
 			WS_OVERLAPPEDWINDOW,
@@ -98,9 +81,23 @@ namespace wunise {
 			windowRect.bottom - windowRect.top,
 			nullptr,
 			nullptr,
-			GetModuleHandle(0),
+			windowClass.hInstance,
 			nullptr);
 		ShowWindow(window_hwnd, SW_SHOWDEFAULT);
+	}
+
+	HWND Window::getHWND() const
+	{
+		return window_hwnd;
+	}
+	int Window::getWidth() const
+	{
+		return width;
+	}
+
+	int Window::getHeight() const
+	{
+		return height;
 	}
 
 }

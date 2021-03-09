@@ -7,6 +7,7 @@ add_executable(wunise WIN32
 	src/window.cpp
 	src/game.cpp
 	src/graphics.cpp
+	src/gamepad.cpp
 )
 target_include_directories(wunise PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(wunise PRIVATE d3d11 dxgi d3dcompiler)

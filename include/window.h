@@ -14,6 +14,9 @@ namespace wunise {
 		Window& operator=(Window&&) noexcept;
 
 		void CreateGameWindow();
+		HWND getHWND()const;
+		int getWidth()const;
+		int getHeight()const;
 	private:
 		std::wstring title;
 		int width;
