@@ -5,7 +5,11 @@
 namespace wunise {
 	class GameWindow {
 	public:
-		GameWindow() noexcept :title(L"wunise"), width(800), height(600) {}
+		GameWindow() noexcept {
+			title = L"wunise";
+			width = 800;
+			height = 600;
+		}
 		~GameWindow() = default;
 		
 		GameWindow(GameWindow&&) noexcept = default;
@@ -14,11 +18,9 @@ namespace wunise {
 		GameWindow(const GameWindow&) = delete;
 		GameWindow& operator=(const GameWindow&) = delete;
 
-		void Initialize();
-		void SetWindowSize(int w, int h);
-
-		void GetWindowSize(int& w, int& h) const ;
 		void CreateGameWindow();
+		void DestroyGameWindow();
+		bool GameLoop();
 
 	private:
 		std::wstring title;
@@ -26,4 +28,4 @@ namespace wunise {
 		int height;
 	};
 }
-#endif // !__WINDOW_H__
+#endif // !__GAMEWINDOW_H__
