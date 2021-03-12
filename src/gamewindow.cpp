@@ -1,86 +1,61 @@
 #include "gamewindow.h"
-#include <Windows.h>
-
+#include <utility>
+#include <memory>
 namespace wunise {
-	LRESULT CALLBACK _windowProc(HWND hWnd, UINT uMsg,
-		WPARAM wParam, LPARAM lParam) {
-		switch (uMsg)
-		{
+
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+		switch (message) {
+
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;
 		}
-		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+		return DefWindowProcW(hWnd, message, wParam, lParam);
 	}
-	void _RegisterWindowClassWin32() {
-		WNDCLASSEXW wc = {};
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_HREDRAW | CS_VREDRAW;
-		wc.lpfnWndProc = _windowProc;
-		wc.hInstance = GetModuleHandleW(NULL);
-		wc.hCursor = LoadCursorW(NULL, MAKEINTRESOURCEW(32512));
-		wc.lpszClassName = L"wuniseCLASS";
-		wc.hIcon = (HICON)LoadImageW(NULL,
-			MAKEINTRESOURCEW(32512), IMAGE_ICON,
-			0, 0, LR_DEFAULTSIZE | LR_SHARED);
-		RegisterClassExW(&wc);
-	}
-	
-	void _UnregisterWindowClassWin32()
+	void _RegisterClass() {}
+	void _UnRegisterClass() {}
+
+	GameWindow::GameWindow() noexcept
 	{
-		UnregisterClassW(L"wuniseCLASS", GetModuleHandleW(NULL));
+		hwnd = NULL;
+		title = L"wunise";
+		width = 800;
+		height = 600;
+	}
+	GameWindow::~GameWindow() {}
+	GameWindow::GameWindow(GameWindow&& r) noexcept {
+		hwnd = r.hwnd;
+		r.hwnd = NULL;
+		title = std::move(r.title);
+		width = r.width;
+		height = r.height;
+	}
+	GameWindow& GameWindow::operator=(GameWindow&& r) noexcept {
+		if (this != std::addressof(r)) {
+			hwnd = r.hwnd;
+			r.hwnd = NULL;
+			title = std::move(r.title);
+			width = r.width;
+			height = r.height;
+		}
+		return *this;
 	}
 
-	void _CreateWindow(int w, int h, const std::wstring& title) {
-		RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
+	void GameWindow::CreateGameWindow() {}
 
-		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-
-		HWND hwnd = CreateWindowExW(
-			0, 
-			L"wuniseCLASS", 
-			title.c_str(),
-			WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT, 
-			CW_USEDEFAULT, 
-			rc.right - rc.left,
-			rc.bottom - rc.top, 
-			nullptr, 
-			nullptr, 
-			GetModuleHandleW(NULL),
-			nullptr);
-
-		ShowWindow(hwnd, SW_SHOWDEFAULT);
-	}
-
-	void _DestroyWindow(const std::wstring &title) {
-		HWND hwnd = FindWindowW(L"wuniseCLASS", title.c_str());
-		DestroyWindow(hwnd);
-	}
-
-
-
-
-	void GameWindow::CreateGameWindow() {
-		_RegisterWindowClassWin32();
-		_CreateWindow(width, height, title);
-	}
-
-	void GameWindow::DestroyGameWindow() {
-		_DestroyWindow(title);
-		_UnregisterWindowClassWin32();
-	}
+	void GameWindow::DestroyGameWindow() {}
 	bool GameWindow::GameLoop() {
 		MSG msg = {};
-		while (WM_QUIT != msg.message)
+		while (msg.message != WM_QUIT)
 		{
-			if (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+			// Process any messages in the queue.
+			if (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
 			{
 				TranslateMessage(&msg);
 				DispatchMessageW(&msg);
 			}
-			else
-			{
+			else {
 				return true;
 			}
 		}
