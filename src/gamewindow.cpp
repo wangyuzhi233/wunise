@@ -2,20 +2,21 @@
 #include <utility>
 #include <memory>
 namespace wunise {
-
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
+		static bool s_in_sizemove = false;
+		static bool s_in_suspend = false;
+		static bool s_minimized = false;
+		static bool s_fullscreen = false;
 		switch (message) {
 
+		//ÍË³öÓÎÏ·
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;
 		}
 		return DefWindowProcW(hWnd, message, wParam, lParam);
 	}
-	void _RegisterClass() {}
-	void _UnRegisterClass() {}
-
 	GameWindow::GameWindow() noexcept
 	{
 		hwnd = NULL;
@@ -42,23 +43,5 @@ namespace wunise {
 		return *this;
 	}
 
-	void GameWindow::CreateGameWindow() {}
 
-	void GameWindow::DestroyGameWindow() {}
-	bool GameWindow::GameLoop() {
-		MSG msg = {};
-		while (msg.message != WM_QUIT)
-		{
-			// Process any messages in the queue.
-			if (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&msg);
-				DispatchMessageW(&msg);
-			}
-			else {
-				return true;
-			}
-		}
-		return false;
-	}
 }

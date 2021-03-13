@@ -15,10 +15,6 @@ namespace wunise {
 		GameWindow(const GameWindow&) = delete;
 		GameWindow& operator=(const GameWindow&) = delete;
 
-		void CreateGameWindow();
-		void DestroyGameWindow();
-		bool GameLoop();
-
 	private:
 		HWND hwnd;
 		std::wstring title;
