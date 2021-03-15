@@ -13,6 +13,20 @@ namespace wunise {
 
 		GameWindow(const GameWindow&) = delete;
 		GameWindow& operator=(const GameWindow&) = delete;
+
+		void SetWidth(int width) {
+			this->width = width;
+		}
+		void SetHeight(int height) {
+			this->height = height;
+		}
+
+		int GetWidth() const {
+			return width;
+		}
+		int GetHeight() const {
+			return height;
+		}
 	private:
 		std::wstring title;
 		int width;

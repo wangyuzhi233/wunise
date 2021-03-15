@@ -25,10 +25,13 @@ namespace wunise {
 		auto game_proc = reinterpret_cast<_game_proc_context*>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
 		switch (message)
 		{
+		//重新绘制 很多情况都可能发生。
+		case WM_PAINT:
+			return 0;
 		//退出游戏 一般是alt+f4 点击退出按钮等
 		case WM_DESTROY:
 			PostQuitMessage(0);
-			break;
+			return 0;
 		}
 		return DefWindowProcW(hWnd, message, wParam, lParam);
 	}
@@ -68,15 +71,12 @@ namespace wunise {
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
 		wcex.lpfnWndProc = WndProc;
 		wcex.hInstance = GetModuleHandleW(NULL);
-		wcex.hIcon = LoadIconW(wcex.hInstance, L"IDI_ICON");
 		wcex.hCursor = LoadCursorW(NULL, MAKEINTRESOURCEW(32512));
-		wcex.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-		wcex.lpszClassName = L"__WUNISE_CLASS";
-		wcex.hIconSm = LoadIconW(wcex.hInstance, L"IDI_ICON");
+		wcex.lpszClassName = L"___wuniseClass";
 		if (!RegisterClassExW(&wcex))
 			return 1;
 
-		RECT rc = { 0, 0, static_cast<LONG>(800), static_cast<LONG>(600) };
+		RECT rc = { 0, 0, static_cast<LONG>(window->GetWidth()), static_cast<LONG>(window->GetHeight()) };
 
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -88,7 +88,6 @@ namespace wunise {
 
 		ShowWindow(hwnd, SW_SHOWDEFAULT);
 		SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_proc.get()));
-
 		MSG msg = {};
 		while (WM_QUIT != msg.message)
 		{
@@ -102,9 +101,6 @@ namespace wunise {
 
 			}
 		}
-
-		DestroyWindow(hwnd);
-		UnregisterClassW(wcex.lpszClassName, wcex.hInstance);
 		return static_cast<int>(msg.wParam);
 	}
 }
