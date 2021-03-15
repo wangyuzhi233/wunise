@@ -1,11 +1,10 @@
 #pragma once
 #ifndef __RENDERER_H__
 #define __RENDERER_H__
-
 namespace wunise {
 	class Renderer {
 	public:
-		Renderer() noexcept {}
+		Renderer() {}
 		~Renderer() {}
 
 		Renderer(Renderer&& r) noexcept {}
@@ -13,10 +12,7 @@ namespace wunise {
 
 		Renderer(const Renderer& r) = delete;
 		Renderer& operator=(const Renderer& r) = delete;
-
-
 	private:
-
 	};
 }
 #endif // !__RENDERER_H__

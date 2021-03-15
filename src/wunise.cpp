@@ -4,6 +4,7 @@ namespace wunise {
 	void ExitGame(int code) {
 		ExitProcess(static_cast<UINT>(code));
 	}
+
 }
 
 
