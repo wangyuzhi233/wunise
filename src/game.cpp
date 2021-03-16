@@ -25,9 +25,6 @@ namespace wunise {
 		auto game_proc = reinterpret_cast<_game_proc_context*>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
 		switch (message)
 		{
-		//重新绘制 很多情况都可能发生。
-		case WM_PAINT:
-			return 0;
 		//退出游戏 一般是alt+f4 点击退出按钮等
 		case WM_DESTROY:
 			PostQuitMessage(0);
@@ -71,6 +68,7 @@ namespace wunise {
 		wcex.style = CS_HREDRAW | CS_VREDRAW;
 		wcex.lpfnWndProc = WndProc;
 		wcex.hInstance = GetModuleHandleW(NULL);
+		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 		wcex.hCursor = LoadCursorW(NULL, MAKEINTRESOURCEW(32512));
 		wcex.lpszClassName = L"___wuniseClass";
 		if (!RegisterClassExW(&wcex))
@@ -78,9 +76,9 @@ namespace wunise {
 
 		RECT rc = { 0, 0, static_cast<LONG>(window->GetWidth()), static_cast<LONG>(window->GetHeight()) };
 
-		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME, FALSE);
 
-		HWND hwnd = CreateWindowExW(0, wcex.lpszClassName, L"wunise", WS_OVERLAPPEDWINDOW,
+		HWND hwnd = CreateWindowExW(0, wcex.lpszClassName,window->GetTitle().c_str(), WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
 			CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, wcex.hInstance,
 			nullptr);
 		if (!hwnd)

@@ -27,6 +27,13 @@ namespace wunise {
 		int GetHeight() const {
 			return height;
 		}
+
+		std::wstring GetTitle() const {
+			return title;
+		}
+		void SetTitle(const std::wstring& title) {
+			this->title = title;
+		}
 	private:
 		std::wstring title;
 		int width;
