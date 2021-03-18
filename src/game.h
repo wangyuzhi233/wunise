@@ -17,7 +17,7 @@ namespace wunise {
 		int Run();
 	protected:
 		std::unique_ptr<class GameWindow> window;
-		std::unique_ptr<class Renderer> renderer;
+		std::unique_ptr<class RenderSystem> rendersystem;
 		std::unique_ptr<class _game_proc_context> _proc;
 	};
 }

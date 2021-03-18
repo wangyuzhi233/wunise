@@ -1,6 +1,7 @@
 #include "game.h"
 #include "gamewindow.h"
-#include "renderer.h"
+#include "rendersystem.h"
+#include "d3d11rendersystem.h"
 #include <Windows.h>
 #include <utility>
 
@@ -10,14 +11,14 @@ namespace wunise {
 
 	class _game_proc_context {
 	public:
-		_game_proc_context() :_window(nullptr), _renderer(nullptr) {}
+		_game_proc_context() :_window(nullptr), _render(nullptr) {}
 		~_game_proc_context() {}
 		_game_proc_context(_game_proc_context&&) noexcept = default;
 		_game_proc_context& operator=(_game_proc_context&&) noexcept = default;
 		_game_proc_context(const _game_proc_context&) = delete;
 		_game_proc_context& operator=(const _game_proc_context&) = delete;
 		GameWindow* _window;
-		Renderer* _renderer;
+		RenderSystem* _render;
 	};
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -25,6 +26,8 @@ namespace wunise {
 		auto game_proc = reinterpret_cast<_game_proc_context*>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
 		switch (message)
 		{
+		case WM_PRINT:
+			return 0;
 		//退出游戏 一般是alt+f4 点击退出按钮等
 		case WM_DESTROY:
 			PostQuitMessage(0);
@@ -36,10 +39,10 @@ namespace wunise {
 	Game::Game()
 	{
 		window = std::make_unique<GameWindow>();
-		renderer = std::make_unique<Renderer>();
+		rendersystem = std::make_unique<D3D11RenderSystem>();
 		_proc = std::make_unique<_game_proc_context>();
 		_proc->_window = window.get();
-		_proc->_renderer = renderer.get();
+		_proc->_render = rendersystem.get();
 	}
 
 	Game::~Game(){}
@@ -47,7 +50,7 @@ namespace wunise {
 	Game::Game(Game&& r) noexcept
 	{
 		window = std::move(r.window);
-		renderer = std::move(r.renderer);
+		rendersystem = std::move(r.rendersystem);
 		_proc = std::move(r._proc);
 	}
 
@@ -55,7 +58,7 @@ namespace wunise {
 	{
 		if (this != std::addressof(r)) {
 			window = std::move(r.window);
-			renderer = std::move(r.renderer);
+			rendersystem = std::move(r.rendersystem);
 			_proc = std::move(r._proc);
 		}
 		return *this;
@@ -76,9 +79,9 @@ namespace wunise {
 
 		RECT rc = { 0, 0, static_cast<LONG>(window->GetWidth()), static_cast<LONG>(window->GetHeight()) };
 
-		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME, FALSE);
+		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX, FALSE);
 
-		HWND hwnd = CreateWindowExW(0, wcex.lpszClassName,window->GetTitle().c_str(), WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME,
+		HWND hwnd = CreateWindowExW(0, wcex.lpszClassName,window->GetTitle().c_str(), WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
 			CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, wcex.hInstance,
 			nullptr);
 		if (!hwnd)

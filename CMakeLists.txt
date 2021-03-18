@@ -5,7 +5,8 @@ add_executable(wunise WIN32
 	src/wunise.cpp
 	src/main.cpp
 	src/gamewindow.cpp
-	src/renderer.cpp
+	src/rendersystem.cpp
+	src/d3d11rendersystem.cpp
 	src/game.cpp
 )
 target_include_directories(wunise PRIVATE ${CMAKE_SOURCE_DIR}/include)
