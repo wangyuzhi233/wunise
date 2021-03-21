@@ -14,27 +14,6 @@ namespace wunise {
 		GameWindow(const GameWindow&) = delete;
 		GameWindow& operator=(const GameWindow&) = delete;
 
-		void SetWidth(int width) {
-			this->width = width;
-		}
-		void SetHeight(int height) {
-			this->height = height;
-		}
-
-		int GetWidth() const {
-			return width;
-		}
-		int GetHeight() const {
-			return height;
-		}
-
-		std::wstring GetTitle() const {
-			return title;
-		}
-		void SetTitle(const std::wstring& title) {
-			this->title = title;
-		}
-	private:
 		std::wstring title;
 		int width;
 		int height;

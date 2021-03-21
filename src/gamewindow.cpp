@@ -5,5 +5,6 @@ namespace wunise {
 		title = L"wunise";
 		width = 800;
 		height = 600;
+	
 	}
 }
