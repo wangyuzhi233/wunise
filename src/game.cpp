@@ -1,5 +1,8 @@
 #include "game.h"
 namespace wunise {
+
+
+
 	LRESULT CALLBACK ___WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		switch (message)
 		{
@@ -42,9 +45,9 @@ namespace wunise {
 			nullptr);
 		if (!hwnd)
 			return 1;
-		CreateDevice();
-		ShowWindow(hwnd, SW_SHOWDEFAULT);
 
+		ShowWindow(hwnd, SW_SHOWDEFAULT);
+		CreateDevice();
 		MSG msg = {};
 		while (WM_QUIT != msg.message)
 		{
@@ -62,13 +65,7 @@ namespace wunise {
 	}
 	void Game::CreateDevice()
 	{
-		Microsoft::WRL::ComPtr<ID3D12Device> m_d3dDevice;
-		auto ppp = D3D12CreateDevice(
-			nullptr,
-			D3D_FEATURE_LEVEL_12_1,
-			IID_PPV_ARGS(m_d3dDevice.ReleaseAndGetAddressOf())
-		);
-
-
+		D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(m_d3dDevice.ReleaseAndGetAddressOf()));
 	}
+
 }

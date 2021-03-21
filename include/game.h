@@ -25,7 +25,7 @@ namespace wunise {
 		std::wstring Title;
 		int Width;
 		int Height;
-		//bool IsFullScreen;
+		Microsoft::WRL::ComPtr<ID3D12Device8> m_d3dDevice;
 	};
 }
 #endif // !__GAME_H__
