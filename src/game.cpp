@@ -1,4 +1,5 @@
 #include "game.h"
+#include "d3dx12.h"
 namespace wunise {
 	LRESULT CALLBACK ___WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		switch (message)
@@ -42,10 +43,16 @@ namespace wunise {
 			nullptr);
 		if (!hwnd)
 			return 1;
+
 		CreateFactory();
 		CreateDevice();
-		CreateCommandQueue();
+
+		CreateGraphicsCommandQueue();
+		CreateCopyCommandQueue();
+		CreateComputeCommandQueue();
+
 		CreateSwapChain(hwnd);
+
 		ShowWindow(hwnd, SW_SHOWDEFAULT);
 
 		MSG msg = {};
@@ -69,12 +76,26 @@ namespace wunise {
 	{
 		D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(m_d3dDevice.ReleaseAndGetAddressOf()));
 	}
-	void Game::CreateCommandQueue()
+	void Game::CreateGraphicsCommandQueue()
 	{
 		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 		queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 		queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-		m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(m_commandQueue.ReleaseAndGetAddressOf()));
+		m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(m_GcommandQueue.ReleaseAndGetAddressOf()));
+	}
+	void Game::CreateCopyCommandQueue()
+	{
+		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+		queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+		queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
+		m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(m_CopycommandQueue.ReleaseAndGetAddressOf()));
+	}
+
+	void Game::CreateComputeCommandQueue() {
+		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+		queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+		queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+		m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(m_ComputecommandQueue.ReleaseAndGetAddressOf()));
 	}
 	void Game::CreateSwapChain(HWND hwnd)
 	{
@@ -99,7 +120,7 @@ namespace wunise {
 		fullscreenDesc.Windowed = !Isfullscreen;
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
 		m_dxgiFactory->CreateSwapChainForHwnd(
-			m_commandQueue.Get(),
+			m_GcommandQueue.Get(),
 			hwnd,
 			&swapChainDesc,
 			&fullscreenDesc,
@@ -109,7 +130,5 @@ namespace wunise {
 		swapChain.As(&m_swapChain);
 		m_dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 	}
-
-
 
 }

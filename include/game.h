@@ -23,9 +23,13 @@ namespace wunise {
 	private:
 		void CreateFactory();
 		void CreateDevice();
-		void CreateCommandQueue();
+		void CreateGraphicsCommandQueue();
+		void CreateCopyCommandQueue();
+		void CreateComputeCommandQueue();
 		void CreateSwapChain(HWND hwnd);
-		
+
+	
+
 		//window message
 		std::wstring Title;
 		int Width;
@@ -33,13 +37,13 @@ namespace wunise {
 		bool Isfullscreen;
 		//render message
 		Microsoft::WRL::ComPtr<ID3D12Device8> m_d3dDevice;
-		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_commandQueue;
+		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_GcommandQueue;
+		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_CopycommandQueue;
+		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_ComputecommandQueue;
 		Microsoft::WRL::ComPtr<IDXGIFactory7> m_dxgiFactory;
 		Microsoft::WRL::ComPtr<IDXGISwapChain4> m_swapChain;
 		//
 		GamePad Gamepad;
-
-		
 	};
 }
 #endif // !__GAME_H__
