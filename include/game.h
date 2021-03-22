@@ -28,8 +28,7 @@ namespace wunise {
 		void CreateComputeCommandQueue();
 		void CreateSwapChain(HWND hwnd);
 		void CreateFence();
-	
-
+	protected:
 		//window message
 		std::wstring Title;
 		int Width;
