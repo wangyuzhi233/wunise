@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(wunise WIN32 
 	src/main.cpp
 	src/game.cpp
+	src/gamepad.cpp
 )
 target_include_directories(wunise PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_link_libraries(wunise PRIVATE d3d12 dxgi d3dcompiler)
+target_link_libraries(wunise PRIVATE d3d12 dxgi)
