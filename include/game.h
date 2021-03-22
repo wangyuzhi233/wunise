@@ -11,7 +11,7 @@ namespace wunise {
 	class Game {
 	public:
 		Game();
-		~Game() {}
+		virtual ~Game() {}
 
 		Game(Game&& r) noexcept = default;
 		Game& operator=(Game&& r) noexcept = default;
@@ -27,7 +27,7 @@ namespace wunise {
 		void CreateCopyCommandQueue();
 		void CreateComputeCommandQueue();
 		void CreateSwapChain(HWND hwnd);
-
+		void CreateFence();
 	
 
 		//window message
@@ -35,6 +35,7 @@ namespace wunise {
 		int Width;
 		int Height;
 		bool Isfullscreen;
+	private:
 		//render message
 		Microsoft::WRL::ComPtr<ID3D12Device8> m_d3dDevice;
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_GcommandQueue;
@@ -42,6 +43,7 @@ namespace wunise {
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_ComputecommandQueue;
 		Microsoft::WRL::ComPtr<IDXGIFactory7> m_dxgiFactory;
 		Microsoft::WRL::ComPtr<IDXGISwapChain4> m_swapChain;
+		Microsoft::WRL::ComPtr<ID3D12Fence1> m_Fence;
 		//
 		GamePad Gamepad;
 	};

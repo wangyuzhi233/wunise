@@ -1,5 +1,4 @@
 #include "game.h"
-#include "d3dx12.h"
 namespace wunise {
 	LRESULT CALLBACK ___WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		switch (message)
@@ -46,7 +45,8 @@ namespace wunise {
 
 		CreateFactory();
 		CreateDevice();
-
+		CreateFence();
+	
 		CreateGraphicsCommandQueue();
 		CreateCopyCommandQueue();
 		CreateComputeCommandQueue();
@@ -63,7 +63,9 @@ namespace wunise {
 				TranslateMessage(&msg);
 				DispatchMessageW(&msg);
 			}
-			else {}
+			else {
+				m_swapChain->Present(1, 0);
+			}
 		}
 		return static_cast<int>(msg.wParam);
 	}
@@ -129,6 +131,10 @@ namespace wunise {
 		);
 		swapChain.As(&m_swapChain);
 		m_dxgiFactory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
+	}
+	void Game::CreateFence()
+	{
+		m_d3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence));
 	}
 
 }
