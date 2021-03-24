@@ -1,7 +1,6 @@
 #include "wunise.h"
 #include <wrl\client.h>
 #include <d3d12.h>
-#include <dxgi1_6.h>
 #include <memory>
 namespace wunise {
 	class _rendersystem {
@@ -81,4 +80,11 @@ namespace wunise {
 	{
 		_rs->m_d3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_rs->m_Fence));
 	}
+	void RenderSystem::CreateSwapChain(HWND hWnd, const DXGI_SWAP_CHAIN_DESC1* pDesc, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC* pFullscreenDesc)
+	{
+		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain;
+		_rs->m_dxgiFactory->CreateSwapChainForHwnd(_rs->m_GcommandQueue.Get(), hWnd, pDesc, pFullscreenDesc, nullptr, &swapChain);
+		swapChain.As(&(_rs->m_swapChain));
+	}
+
 }
